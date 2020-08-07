@@ -30,7 +30,7 @@ listnodeptr makelist(void);
 listnodeptr addlistnode(listnodeptr a, int x);
 int listsize(listnodeptr a);
 treenodeptr maketree(listnodeptr *pa, int n);
-treenodeptr findtree(treenodeptr root, int k); // Pointer to kth node
+treenodeptr findtree(treenodeptr root, int k, int *px, int listsize); // Pointer to kth node
 void printtree(treenodeptr root);
 
 
@@ -43,6 +43,10 @@ int main(int argc, const char * argv[]) {
     treenodeptr root = maketree(pa,n);
     printtree(root);
     printf("\n");
+    int *px = (int *) malloc(sizeof(int));
+    *px = 0;
+    printf("%d\n", findtree(root, 2, px, n) -> info);
+    
     return 0;
 }
 
@@ -117,7 +121,17 @@ treenodeptr maketree(listnodeptr *pa, int n) {
     return p;
 }
 
-treenodeptr findtree(treenodeptr p, int k) {
+treenodeptr findtree(treenodeptr p, int k, int *px, int listsize) {
+    if (p == NULL || k > listsize)
+        return NULL;
+    (*px)++;
+    if (*px == k)
+        return p;
+    treenodeptr q = findtree(p -> left, k, px, listsize);
+    treenodeptr r = findtree(p -> right, k, px, listsize);
+    if (q != NULL || r != NULL)
+        return((q == NULL) ? r : q);
+    
     return NULL;
 }
 
